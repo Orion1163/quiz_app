@@ -1,11 +1,13 @@
 package com.orion.quizapp.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.orion.quizapp.dao.QuestionDao;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import com.orion.quizapp.Question;
 
@@ -15,26 +17,51 @@ public class QuestionService {
     @Autowired
     QuestionDao questionDao;
 
-    public List<Question> getAllQuestions() {
-        return questionDao.findAll();
+    public ResponseEntity<List<Question>> getAllQuestions() {
+        try {
+            return new ResponseEntity<>(questionDao.findAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
-    public List<Question> getQuestionByCategory(String category) {
-        return questionDao.findByCategory(category);
+    public ResponseEntity<List<Question>> getQuestionByCategory(String category) {
+        try {
+            return new ResponseEntity<>(questionDao.findByCategory(category), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
-    public String addQuestion(Question question) {
-        questionDao.save(question);
-        return "Success";
+    public ResponseEntity<String> addQuestion(Question question) {
+        try {
+            questionDao.save(question);
+            return new ResponseEntity<String>("Question added successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<String>("Question not added", HttpStatus.BAD_REQUEST);
     }
 
-    public String deleteQuestion(int id) {
+    public ResponseEntity<String> deleteQuestion(int id) {
+        try{
         questionDao.deleteById(id);
-        return "Success";
+        return new ResponseEntity<String>("Question Deleted Successfully", HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<String>(" Question not deleted Successfully", HttpStatus.BAD_REQUEST);
     }
 
-    public String updateQuestion(Question question) {
+    public ResponseEntity<String> updateQuestion(Question question) {
+        try{
         questionDao.save(question);
-        return "Question updated successfully";
-    }
+        return new ResponseEntity<String>("Question updated successfully", HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<String>("Question not updated", HttpStatus.BAD_REQUEST);
+        }
 }
