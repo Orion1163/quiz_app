@@ -9,4 +9,5 @@ import com.orion.quizapp.Question;
 public interface QuestionDao extends JpaRepository<Question, Integer> {
     List<Question> findByCategory(String category);
     Question save(Question question);
+    void deleteById(int id);
 } 

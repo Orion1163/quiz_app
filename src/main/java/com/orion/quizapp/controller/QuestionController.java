@@ -10,6 +10,9 @@ import com.orion.quizapp.service.QuestionService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 @RestController
 @RequestMapping("/api/v1/question")
 public class QuestionController {
@@ -30,6 +33,16 @@ public class QuestionController {
     @PostMapping("add")
     public String addQuestion(@RequestBody Question question) {
         return questionService.addQuestion(question);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public String deleteQuestion(@PathVariable int id) {
+        return questionService.deleteQuestion(id);
+    }
+
+    @PutMapping("update/{id}")
+    public String updateQuestion(@PathVariable int id, @RequestBody Question question) {
+        return questionService.updateQuestion(question);
     }
 }
 
