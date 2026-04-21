@@ -11,6 +11,8 @@ import com.orion.quizapp.dao.QuestionDao;
 import com.orion.quizapp.dao.QuizDao;
 import com.orion.quizapp.model.Question;
 import com.orion.quizapp.model.Quiz;
+import com.orion.quizapp.model.Response;
+
 import org.springframework.http.HttpStatus;
 import com.orion.quizapp.model.QuestionWrapper;
 import java.util.ArrayList;
@@ -49,5 +51,19 @@ public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id) {
         questionsForUser.add(questionWrapper);
     }
     return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+}
+
+public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+    Quiz quiz = quizDao.findById(id).get();
+    List<Question> questions = quiz.getQuestions();
+    int right = 0;
+    int i = 0;
+    for (Response response : responses) {
+        if (response.getResponse().equals(questions.get(i).getRightAnswer())) {
+            right++;
+        }
+        i++;
+    }
+    return new ResponseEntity<>(right, HttpStatus.OK);
 }
 }
