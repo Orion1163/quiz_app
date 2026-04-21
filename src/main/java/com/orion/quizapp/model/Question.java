@@ -1,4 +1,4 @@
-package com.orion.quizapp;
+package com.orion.quizapp.model;
 
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

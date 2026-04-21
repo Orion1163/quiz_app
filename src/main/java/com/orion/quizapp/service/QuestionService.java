@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.orion.quizapp.dao.QuestionDao;
+import com.orion.quizapp.model.Question;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-
-import com.orion.quizapp.Question;
 
 @Service
 public class QuestionService {
