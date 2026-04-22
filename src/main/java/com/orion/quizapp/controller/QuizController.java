@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import com.orion.quizapp.model.QuestionWrapper;
 import com.orion.quizapp.model.Response;
-
+import com.orion.quizapp.model.QuizSummary;
 
 @RestController
 @RequestMapping("/api/v1/quiz")
@@ -36,6 +36,11 @@ public class QuizController {
     @PostMapping("submit/{id}")
     public ResponseEntity<Integer> submitQuiz(@PathVariable Integer id, @RequestBody List<Response> responses) {
         return quizService.calculateResult(id, responses);
+    }
+
+    @GetMapping("getallquizzes")
+    public ResponseEntity<List<QuizSummary>> getAllQuizzes() {
+        return quizService.getAllQuizzes();
     }
 }
 

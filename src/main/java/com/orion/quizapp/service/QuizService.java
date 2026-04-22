@@ -11,11 +11,13 @@ import com.orion.quizapp.dao.QuestionDao;
 import com.orion.quizapp.dao.QuizDao;
 import com.orion.quizapp.model.Question;
 import com.orion.quizapp.model.Quiz;
+import com.orion.quizapp.model.QuizSummary;
 import com.orion.quizapp.model.Response;
 
 import org.springframework.http.HttpStatus;
 import com.orion.quizapp.model.QuestionWrapper;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -65,5 +67,12 @@ public ResponseEntity<Integer> calculateResult(Integer id, List<Response> respon
         i++;
     }
     return new ResponseEntity<>(right, HttpStatus.OK);
+}
+
+public ResponseEntity<List<QuizSummary>> getAllQuizzes() {
+    List<QuizSummary> quizzes = quizDao.findAll().stream()
+            .map(quiz -> new QuizSummary(quiz.getId(), quiz.getTitle()))
+            .collect(Collectors.toList());
+    return new ResponseEntity<>(quizzes, HttpStatus.OK);
 }
 }
