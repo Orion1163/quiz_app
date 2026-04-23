@@ -26,6 +26,9 @@ const Questions = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState(initialFormState);
   const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletingQuestionId, setDeletingQuestionId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const fieldLabelStyle = { display: "grid", gap: "6px", color: "#cbd5e1", fontSize: "13px" };
   const fieldStyle = {
     background: "linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.75))",
@@ -105,7 +108,32 @@ const Questions = () => {
   };
 
   const handleDelete = (id) => {
-    console.log(id);
+    setDeletingQuestionId(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (deleting) return;
+    setIsDeleteModalOpen(false);
+    setDeletingQuestionId(null);
+  };
+
+  const confirmDeleteQuestion = async () => {
+    if (!deletingQuestionId) return;
+    try {
+      setDeleting(true);
+      setError("");
+      setSuccessMessage("");
+      await axios.delete(`http://localhost:8080/api/v1/question/delete/${deletingQuestionId}`);
+      setSuccessMessage("Question deleted successfully.");
+      setIsDeleteModalOpen(false);
+      setDeletingQuestionId(null);
+      await fetchQuestions();
+    } catch (deleteErr) {
+      setError(deleteErr?.response?.data?.message || "Unable to delete question.");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const handleAddQuestion = () => {
@@ -447,6 +475,77 @@ const Questions = () => {
               </button>
             </div>
           </form>
+        </div>
+      ) : null}
+
+      {isDeleteModalOpen ? (
+        <div
+          onClick={closeDeleteModal}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "radial-gradient(circle at top, rgba(244, 63, 94, 0.15), rgba(2, 6, 23, 0.9) 55%)",
+            backdropFilter: "blur(6px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1100,
+            padding: "20px",
+          }}
+        >
+          <div
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              width: "min(460px, 100%)",
+              background: "linear-gradient(160deg, #0b1220, #111827 45%, #3f1d1d)",
+              border: "1px solid rgba(251, 113, 133, 0.32)",
+              borderRadius: "18px",
+              padding: "22px",
+              boxShadow: "0 30px 70px rgba(2, 6, 23, 0.6)",
+            }}
+          >
+            <h3 style={{ margin: 0, color: "#ffe4e6", fontSize: "20px" }}>Delete Question</h3>
+            <p style={{ margin: "8px 0 0 0", color: "#fecdd3", fontSize: "14px", lineHeight: 1.5 }}>
+              This action will permanently remove the question from your quiz bank. Are you sure you want to continue?
+            </p>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "18px" }}>
+              <button
+                type="button"
+                onClick={closeDeleteModal}
+                disabled={deleting}
+                style={{
+                  minWidth: "100px",
+                  height: "40px",
+                  border: "1px solid rgba(251, 113, 133, 0.32)",
+                  background: "rgba(15, 23, 42, 0.9)",
+                  color: "#fecdd3",
+                  borderRadius: "10px",
+                  cursor: deleting ? "not-allowed" : "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteQuestion}
+                disabled={deleting}
+                style={{
+                  minWidth: "130px",
+                  height: "40px",
+                  border: "1px solid rgba(251, 113, 133, 0.4)",
+                  background: "linear-gradient(135deg, #be123c, #ef4444)",
+                  color: "#fff1f2",
+                  borderRadius: "10px",
+                  cursor: deleting ? "not-allowed" : "pointer",
+                  fontWeight: 700,
+                  opacity: deleting ? 0.85 : 1,
+                }}
+              >
+                {deleting ? "Deleting..." : "Delete Question"}
+              </button>
+            </div>
+          </div>
         </div>
       ) : null}
     </div>
