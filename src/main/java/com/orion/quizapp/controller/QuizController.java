@@ -16,9 +16,11 @@ import java.util.List;
 import com.orion.quizapp.model.QuestionWrapper;
 import com.orion.quizapp.model.Response;
 import com.orion.quizapp.model.QuizSummary;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/api/v1/quiz")
+@CrossOrigin(origins = "http://localhost:5173")
 public class QuizController {
 
     @Autowired
